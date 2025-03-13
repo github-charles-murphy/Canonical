@@ -1,0 +1,82 @@
+1. Linux Skills 
+
+Q1: Describe the tasks you performed using Linux in recent projects. Was it hands-on work, involving command-line usage, or more interaction through interfaces like AWS? 
+At Bloomberg, I had a DevOps role that required extensive hands-on work with Linux. One key project involved managing disk space for test artifacts and other files on Linux machines. I created and maintained cron jobs that executed scripts I wrote to monitor disk usage. These scripts analyzed various directories, assessed storage needs, and, based on pre-defined criteria, determined which files to delete, which to preserve, and which to archive to S3 storage. I also developed observability tools to monitor machine health, tracking metrics like CPU usage, CPU load, and the number of running processes. This work helped ensure that resource leaks did not degrade the developer experience. 
+
+Q2: What challenges have you resolved in Linux, especially complex or unique ones? How did this contribute to achieving project goals? 
+One notable challenge was ensuring efficient disk space usage across multiple Linux machines. I had to create logic that could make automated, intelligent decisions about which files to delete, preserve, or archive. This involved balancing storage constraints with operational needs, ensuring the machines remained efficient without losing critical artifacts. Additionally, I addressed potential resource leaks by writing observability tools to detect abnormal CPU usage and process counts, enabling proactive maintenance before developer productivity was affected. 
+
+2. Docker and Containerization 
+
+Q3: Provide examples of how containerization helped achieve project objectives. 
+At Bloomberg, as part of the DevOps team responsible for the CI/CD pipeline, I leveraged containerization to provide developers with consistent and reproducible development, testing, and build environments. Our objective was to ensure that developers could reproduce any output they saw in the CI/CD pipeline locally in their working sandboxes. We accomplished this by creating containerized environments for the development, testing, and building processes. Developers could generate these environments using a simple script with input parameters, allowing them to spin up a container that mirrored the CI/CD pipeline environment exactly. This approach eliminated discrepancies between local and CI/CD builds, streamlined debugging, and accelerated developer feedback loops. 
+
+Q4: What containerization issues have you encountered, and how did you resolve them? Do you have experience optimizing containers? 
+One challenge was ensuring that the containerized environments used for development, testing, and builds were identical in functionality and behavior across local and CI/CD systems. To address this, we standardized the container build process, using scripts that enforced consistency in the tools, libraries, and configurations within each container. This effort minimized environment-specific issues and reduced the need for developer troubleshooting. While the primary focus was on consistency and reproducibility, optimization efforts focused on reducing container build times and ensuring efficient usage of resources like CPU and memory. 
+
+3. Orchestration and Infrastructure as Code (IaC) 
+
+Q5: In what tasks have you used Terraform? How did you manage versions and changes in large projects? 
+At Mysten Labs, I used Terraform to provision infrastructure as code for Sui networks. This involved provisioning bare-metal machines, Cloudflare DNS records, load balancers, and other critical resources, then connecting them into a cohesive system. Initially, each Sui network had its own set of Terraform files, which was inefficient and repetitive. To address this, I introduced and implemented the use of Terraform modules for better code reuse. This allowed us to spin up multiple Sui networks with minimal effort, as the module parameters could be adjusted for small, network-specific differences. 
+
+To manage changes in large projects, I established a versioning strategy for Terraform modules. Small updates were applied directly to the module itself, while larger changes prompted the creation of a new variant of the Terraform module. This approach allowed us to avoid disrupting existing long-lived networks while ensuring new networks were built using the latest, most stable version of the module. Over time, we gradually migrated older networks to newer module versions, usually one at a time to reduce risk. 
+
+Q6: What approach did you take to plan and develop infrastructure as code? How did this impact stability and scalability? 
+My approach to developing infrastructure as code (IaC) focused on modularization and controlled versioning. By introducing reusable Terraform modules, I improved both stability and scalability. Stability was achieved by isolating changes to specific module versions, allowing us to control when and how existing long-lived networks were migrated to new versions. This minimized disruptions to existing infrastructure. Scalability was achieved by enabling the rapid creation of new Sui networks using the latest module versions, significantly reducing the time required to deploy new environments. This combination of stability and scalability allowed Mysten Labs to quickly spin up ephemeral networks while maintaining control over longer-lived networks. 
+
+4. Configuration Management with Ansible 
+
+Q7: Provide examples of tasks you have automated with Ansible. Which tasks were the most challenging? 
+At Mysten Labs, I used Ansible to configure and manage bare-metal nodes for the Sui blockchain. The Ansible scripts automated the entire process of setting up and maintaining these nodes, including applying configurations, downloading binaries, and performing necessary installations. This automation ensured that Sui blockchain nodes were configured correctly and consistently across all machines. 
+
+A key challenge in this process was managing SSH access to the numerous bare-metal nodes. Initially, a single SSH key was used for all machines to quickly test the scripts, but this approach was recognized as insecure. To address this, we implemented Teleport, an access proxy that supports short-lived, manageable, and revocable SSH keys along with multi-factor authentication (MFA). However, integrating Teleport with Ansible posed a significant technical challenge. Ansible requires persistent SSH access to the nodes it manages, and MFA-based short-lived keys introduced complexity. 
+
+To solve this, we collaborated with the Teleport team to create a solution where the Teleport server dynamically generated an SSH configuration file. This file was used by the Ansible process to connect to each bare-metal machine through the Teleport proxy. To ensure this worked reliably, we implemented an Ansible controller (such as AWX) where the required machine service user credentials for the Teleport server were stored. This setup enabled the controller machine to dynamically access SSH config files and establish connections to the bare-metal nodes, allowing for fully automated Ansible runs. 
+
+Q8: Have you used Ansible for managing bare-metal servers? If so, what challenges did you face, and how did you address them? 
+Yes, I used Ansible to manage bare-metal servers at Mysten Labs. The biggest challenge was securely managing SSH access to a large number of bare-metal nodes. Initially, all nodes shared a single SSH key, which was not secure but allowed for rapid development and testing of our scripts. To increase security, we adopted Teleport to issue short-lived, revocable SSH keys and enforce multi-factor authentication. This introduced a new challenge since Ansible needed persistent access to the nodes. 
+
+The solution was to configure Ansible to use Teleport's dynamic SSH configuration files. The Ansible controller (AWX) was configured with machine user credentials to interface with Teleport. This allowed the controller to generate temporary SSH configs on the fly, enabling seamless SSH connections during Ansible runs. This solution enabled secure, efficient, and automated management of the bare-metal nodes while maintaining strong security controls. 
+
+5. Working with On-premises Servers and Public Cloud 
+
+Q9: Have you worked on projects where you combined on-premises servers with public cloud solutions like AWS or GCP? How did you approach integration and optimization for such hybrid environments? 
+
+N/A 
+
+6. Bare-metal Experience 
+
+Q10: Have you worked with bare-metal servers in the last few years? 
+Yes, I worked with bare-metal servers at Mysten Labs to provision and maintain Sui blockchain nodes. 
+
+Q10 (continued): What tasks did you perform with bare-metal infrastructure, and how did you use Ansible for provisioning? 
+I used Ansible to automate the provisioning, configuration, and maintenance of bare-metal machines running the Sui blockchain. This included configuring each machine, installing required binaries, and ensuring all nodes were consistently set up according to project specifications. The most significant challenge was managing SSH access to these bare-metal machines at scale. I solved this by implementing Teleport, which issued short-lived SSH keys and enforced multi-factor authentication. By configuring the Ansible controller to interface with Teleport’s dynamic SSH config files, I ensured that Ansible could seamlessly access and manage each bare-metal node. 
+
+7. Basic Knowledge in Cryptography and Security 
+
+Q11: What aspects of cryptography and security have you worked with? How were these applied in practice? 
+At Mysten Labs, I worked extensively with TLS, SSL, certificate chains, and certificate authorities (CAs) as part of the production engineering team. I was responsible for securing access to bare-metal machines, Kubernetes clusters, databases, and other cloud resources via the Teleport access proxy, which relies on mutual TLS and certificate-based authentication. This setup required me to manage the lifecycle of certificates, including creation, renewal, and updates using a certificate authority server. 
+
+I also deployed and managed Teleport agents on both Kubernetes clusters and bare-metal machines, ensuring that access to these resources was secure and aligned with the principle of least privilege. The mutual TLS setup required both the client and the server to present valid certificates to establish trust. Additionally, I configured multi-factor authentication (MFA) for users accessing cloud resources via Teleport. This enhanced security by requiring multiple authentication factors for access. 
+
+Q12: Do you have experience with encryption, SSL/TLS, authentication, and other methods? Provide examples of projects where these were crucial. 
+Yes, I have extensive experience with TLS/SSL, encryption, and authentication methods. One key example was at Mysten Labs, where I played a critical role in securing access to cloud resources via the Teleport access proxy. This required me to configure mutual TLS for all communications between clients and servers, ensuring that both sides presented valid certificates to establish a secure connection. 
+
+To achieve this, in collaboration with the security team, I configured the certificate lifecycle for all Teleport-managed cloud resources. I also enforced the use of multi-factor authentication (MFA) for users accessing the Teleport proxy, further enhancing the security posture of the environment. This implementation secured access to Kubernetes clusters, databases, and other critical infrastructure, ensuring least-privileged access for developers and operators. 
+
+8. Knowledge of Modern Programming Languages (Go, Rust, Python, or C++) 
+
+Q13: Which programming language do you use most frequently? Can you share examples of your code? 
+The two modern programming languages I have used most frequently are Python and Ruby. At Bloomberg, I used a mixture of both Python and Ruby to develop tools related to CI/CD. These tools supported both the CI/CD pipeline and developers' local sandboxes, enabling them to run builds, tests, and other processes locally in the same environment as the CI/CD system. Some of these tools also gathered observability metrics by inspecting the machine they were running on, tracking data like CPU load and resource usage. 
+
+At Mysten Labs, I primarily worked with Python for production engineering tasks. My Python-based projects included: 
+
+Ansible inventory scripts to dynamically generate inventory files for Ansible playbooks. 
+
+Command-line tools to interact with cloud provider APIs, query active resources, and generate reports or statistics. 
+
+Pulumi-based infrastructure as code (IaC). One major project involved provisioning an Ansible controller within a Kubernetes cluster. I used Pulumi (with Python) to deploy the Helm chart for the Ansible controller, configuring it to fit the unique requirements of the production environment. 
+
+These experiences highlight my ability to write efficient, maintainable Python and Ruby scripts for DevOps, CI/CD, and production engineering tasks. 
+
+ 
